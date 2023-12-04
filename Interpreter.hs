@@ -45,6 +45,25 @@ step (And BFalse _) = BFalse
 step (And BTrue e) = e 
 step (And e1 e2) = And (step e1) e2 
 
+step (Or BFalse BFalse) = BFalse 
+step (Or BTrue _) = BTrue
+step (Or _ BTrue) = BTrue
+step (Or e1 e2) = Or (step e1) (step e2)
+step BTrue = BTrue
+step BFalse = BFalse
+
+step (Greater (Num n1) (Num n2)) = if (n1 > n2) then BTrue else BFalse
+step (Greater (Num n) e) = Greater (Num n) (step e)
+step (Greater e1 e2) = Greater (step e1) e2
+
+step (Smaller (Num n1) (Num n2)) =  if (n1 < n2) then BTrue else BFalse
+step (Smaller (Num n) e) = Smaller (Num n) (step e)
+step (Smaller e1 e2) = Smaller (step e1) e2
+
+step (Equal (Num n1) (Num n2)) = if (n1 == n2) then BTrue else BFalse
+step (Equal (Num n) e) = Equal (Num n) (step e)
+step (Equal e1 e2) = Equal (step e1) e2
+
 step (If BFalse e1 e2) = e2 
 step (If BTrue e1 e2) = e1 
 step (If e e1 e2) = If (step e) e1 e2 
