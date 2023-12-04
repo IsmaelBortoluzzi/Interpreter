@@ -27,19 +27,37 @@ subst x n e = e
 step :: Expr -> Expr 
 step (Add (Num n1) (Num n2)) = Num (n1 + n2)
 step (Add (Num n) e) = Add (Num n) (step e)
-step (Add e1 e2) = Add (step e1) e2 
+step (Add e1 e2) = Add (step e1) e2
+
+step (Sub (Num n1) (Num n2)) = Num (n1 - n2)
+step (Sub (Num n) e) = Sub (Num n) (step e)
+step (Sub e1 e2) = Sub (step e1) e2
+
+step (Mul (Num n1) (Num n2)) = Num (n1 * n2)
+step (Mul (Num n) e) = Mul (Num n) (step e)
+step (Mul e1 e2) = Mul (step e1) e2
+
+step (Div (Num n1) (Num n2)) = Num (n1 `div` n2)
+step (Div (Num n) e) = Div (Num n) (step e)
+step (Div e1 e2) = Div (step e1) e2
+
 step (And BFalse _) = BFalse 
 step (And BTrue e) = e 
 step (And e1 e2) = And (step e1) e2 
+
 step (If BFalse e1 e2) = e2 
 step (If BTrue e1 e2) = e1 
 step (If e e1 e2) = If (step e) e1 e2 
+
 step (Paren e) = e
+
 step (App (Lam x t b) e2) | isValue e2 = subst x e2 b 
-                        | otherwise = (App (Lam x t b) (step e2))
+                          | otherwise = (App (Lam x t b) (step e2))
 step (App e1 e2) = App (step e1) e2
+
 step (Let v e1 e2) | isValue e1 = subst v e1 e2 
                    | otherwise = Let v (step e1) e2
+
 step e = error (show e)
 
 eval :: Expr -> Expr 
