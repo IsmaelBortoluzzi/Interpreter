@@ -52,6 +52,10 @@ step (Or e1 e2) = Or (step e1) (step e2)
 step BTrue = BTrue
 step BFalse = BFalse
 
+step (Not BFalse) = BTrue 
+step (Not BTrue) = BFalse
+step (Not e1) = Not (step e1)
+
 step (Greater (Num n1) (Num n2)) = if (n1 > n2) then BTrue else BFalse
 step (Greater (Num n) e) = Greater (Num n) (step e)
 step (Greater e1 e2) = Greater (step e1) e2

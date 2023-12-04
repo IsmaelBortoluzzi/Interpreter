@@ -11,6 +11,7 @@ data Expr = BTrue
           | Div Expr Expr 
           | And Expr Expr
           | Or Expr Expr
+          | Not Expr
           | Greater Expr Expr
           | Smaller Expr Expr
           | Equal Expr Expr
@@ -36,6 +37,7 @@ data Token = TokenTrue
            | TokenDiv
            | TokenAnd
            | TokenOr
+           | TokenNot
            | TokenGreater
            | TokenSmaller
            | TokenEqual
@@ -56,7 +58,7 @@ data Token = TokenTrue
            deriving (Show, Eq)
 
 isSymb :: Char -> Bool 
-isSymb c = c `elem` "+-*/&|><\\->=:"
+isSymb c = c `elem` "!+-*/&|><\\->=:"
 
 lexer :: String -> [Token]
 lexer [] = [] 
@@ -80,6 +82,7 @@ lexSymbol cs = case span isSymb cs of
                  ("/", rest)  -> TokenDiv : lexer rest 
                  ("&&", rest) -> TokenAnd : lexer rest 
                  ("||", rest) -> TokenOr : lexer rest
+                 ("!", rest) -> TokenNot : lexer rest
                  (">", rest) -> TokenGreater : lexer rest
                  ("<", rest) -> TokenSmaller : lexer rest
                  ("==", rest) -> TokenEqual : lexer rest

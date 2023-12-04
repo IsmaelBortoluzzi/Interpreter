@@ -11,6 +11,7 @@ import Lexer
 
 %left "||"
 %left "&&"
+%left '!'
 %nonassoc '<' '>' "=="
 %left '+' '-'
 %left '*' '/'
@@ -23,6 +24,7 @@ import Lexer
     '/'         { TokenDiv }
     "&&"        { TokenAnd }
     "||"        { TokenOr }
+    '!'         { TokenNot }
     '>'         { TokenGreater }
     '<'         { TokenSmaller }
     "=="        { TokenEqual }
@@ -54,6 +56,7 @@ Exp         : num                           { Num $1 }
             | Exp '/' Exp                   { Div $1 $3 }
             | Exp "&&" Exp                  { And $1 $3 }
             | Exp "||" Exp                  { Or $1 $3 }
+            | '!' Exp                       { Not $2 }
             | Exp '>' Exp                   { Greater $1 $3 }
             | Exp '<' Exp                   { Smaller $1 $3 }
             | Exp "==" Exp                  { Equal $1 $3 }
