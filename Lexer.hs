@@ -21,11 +21,13 @@ data Expr = BTrue
           | App Expr Expr
           | Paren Expr
           | Let String Expr Expr 
+          | List [Expr]
           deriving Show
 
 data Ty = TBool 
         | TNum 
         | TFun Ty Ty
+        | TList Ty
         deriving (Show, Eq)
 
 data Token = TokenTrue 
@@ -53,8 +55,12 @@ data Token = TokenTrue
            | TokenEq 
            | TokenIn
            | TokenColon
-           | TokenBoolean 
-           | TokenNumber
+           | TokenTyBoolean 
+           | TokenTyNumber
+           | TokenTyList
+           | TokenLSqBracket
+           | TokenRSqBracket
+           | TokenComma
            deriving (Show, Eq)
 
 isSymb :: Char -> Bool 
@@ -64,6 +70,9 @@ lexer :: String -> [Token]
 lexer [] = [] 
 lexer ('(':cs) = TokenLParen : lexer cs
 lexer (')':cs) = TokenRParen : lexer cs
+lexer (',':cs) = TokenComma : lexer cs
+lexer ('[':cs) = TokenLSqBracket : lexer cs
+lexer (']':cs) = TokenRSqBracket : lexer cs
 lexer (c:cs) | isSpace c = lexer cs 
              | isDigit c = lexNum (c:cs)
              | isSymb c = lexSymbol (c:cs)
@@ -101,8 +110,9 @@ lexKW cs = case span isAlpha cs of
              ("else", rest) -> TokenElse : lexer rest 
              ("let", rest) -> TokenLet : lexer rest 
              ("in", rest) -> TokenIn : lexer rest 
-             ("Num", rest) -> TokenNumber : lexer rest 
-             ("Bool", rest) -> TokenBoolean : lexer rest 
+             ("Num", rest) -> TokenTyNumber : lexer rest 
+             ("Bool", rest) -> TokenTyBoolean : lexer rest 
+             ("List", rest) -> TokenTyList : lexer rest 
              (var, rest) -> TokenVar var : lexer rest 
 
 
