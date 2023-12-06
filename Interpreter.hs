@@ -2,6 +2,7 @@ module Interpreter where
 
 import Lexer 
 import Parser
+import ListUtils
 
 isValue :: Expr -> Bool 
 isValue BTrue = True 
@@ -16,23 +17,40 @@ subst x n (Var v) = if (x == v) then n else (Var v)
 subst x n (Lam v t b) = Lam v t (subst x n b)
 subst x n (App e1 e2) = App (subst x n e1) (subst x n e2)
 subst x n (Add e1 e2) = Add (subst x n e1) (subst x n e2)
+subst x n (Sub e1 e2) = Sub (subst x n e1) (subst x n e2)
+subst x n (Mul e1 e2) = Mul (subst x n e1) (subst x n e2)
+subst x n (Div e1 e2) = Div (subst x n e1) (subst x n e2)
 subst x n (And e1 e2) = And (subst x n e1) (subst x n e2)
+subst x n (Or e1 e2) = Or (subst x n e1) (subst x n e2)
+subst x n (Not e) = Not (subst x n e)
+subst x n (Greater e1 e2) = Greater (subst x n e1) (subst x n e2)
+subst x n (Smaller e1 e2) = Smaller (subst x n e1) (subst x n e2)
+subst x n (Equal e1 e2) = Equal (subst x n e1) (subst x n e2)
 subst x n (If e1 e2 e3) = If (subst x n e1) (subst x n e2) (subst x n e3)
 subst x n (Paren e) = Paren (subst x n e)
 subst x n (Let v e1 e2) = Let v (subst x n e1) (subst x n e2)
 subst x n (List es) = List (map (subst x n) es)
 subst x n e = e 
 
-step :: Expr -> Expr 
+step :: Expr -> Expr
+step (Add (List l1) (List l2)) = sumLists (evalList (List l1)) (evalList (List l2))
 step (Add (Num n1) (Num n2)) = Num (n1 + n2)
+
+step (Add (List l1) e) = Add (List l1) (step e)
 step (Add (Num n) e) = Add (Num n) (step e)
 step (Add e1 e2) = Add (step e1) e2
 
+step (Sub (List l1) (List l2)) = subLists (evalList (List l1)) (evalList (List l2))
 step (Sub (Num n1) (Num n2)) = Num (n1 - n2)
+step (Sub (List l1) e) = Sub (List l1) (step e)
 step (Sub (Num n) e) = Sub (Num n) (step e)
 step (Sub e1 e2) = Sub (step e1) e2
 
+step (Mul (List l) (Num n)) = multiplyByScalar (evalList (List l)) (Num n)
+step (Mul (Num n) (List l)) = multiplyByScalar (evalList (List l)) (Num n)
 step (Mul (Num n1) (Num n2)) = Num (n1 * n2)
+
+step (Mul (List l1) e) = Mul (List l1) (step e)
 step (Mul (Num n) e) = Mul (Num n) (step e)
 step (Mul e1 e2) = Mul (step e1) e2
 

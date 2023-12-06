@@ -11,12 +11,16 @@ typeof ctx BFalse = Just TBool
 typeof ctx (Num _) = Just TNum 
 typeof ctx (Add e1 e2) = case (typeof ctx e1, typeof ctx e2) of 
                        (Just TNum, Just TNum) -> Just TNum 
+                       (Just (TList TNum), Just (TList TNum)) -> Just (TList TNum)
                        _                      -> Nothing
 typeof ctx (Sub e1 e2) = case (typeof ctx e1, typeof ctx e2) of 
                        (Just TNum, Just TNum) -> Just TNum 
+                       (Just (TList TNum), Just (TList TNum)) -> Just (TList TNum)
                        _                      -> Nothing
 typeof ctx (Mul e1 e2) = case (typeof ctx e1, typeof ctx e2) of 
                        (Just TNum, Just TNum) -> Just TNum 
+                       (Just (TList TNum), Just TNum) -> Just (TList TNum)
+                       (Just TNum, Just (TList TNum)) -> Just (TList TNum)
                        _                      -> Nothing
 typeof ctx (Div e1 e2) = case (typeof ctx e1, typeof ctx e2) of 
                        (Just TNum, Just TNum) -> Just TNum 
