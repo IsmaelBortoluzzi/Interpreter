@@ -6,6 +6,14 @@ import TypeChecker
 import Interpreter
 
 
+isNotComment :: String -> Bool
+isNotComment (' ':s) = isNotComment s
+isNotComment ('\n':s) = isNotComment s
+isNotComment ("") = False
+isNotComment ('#':s) = False
+isNotComment (_) = True
+
+
 splitOn :: (Char -> Bool) -> String -> [String]
 splitOn p s = case dropWhile p s of
                       "" -> []
@@ -14,7 +22,7 @@ splitOn p s = case dropWhile p s of
     
 
 evaluate :: String -> [Expr]
-evaluate lines = execStatement $ splitOn (==';') lines
+evaluate lines = execStatement $ (filter isNotComment) $ splitOn (==';') lines
 
 
 execStatement :: [String] -> [Expr]

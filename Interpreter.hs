@@ -8,13 +8,11 @@ isValue BTrue = True
 isValue BFalse = True
 isValue (Num _) = True 
 isValue (Lam _ _ _) = True
+isValue (List _) = True
 isValue _ = False 
 
 subst :: String -> Expr -> Expr -> Expr 
-subst x n (Var v) = if (x == v) then
-                      n 
-                    else 
-                      (Var v)
+subst x n (Var v) = if (x == v) then n else (Var v)
 subst x n (Lam v t b) = Lam v t (subst x n b)
 subst x n (App e1 e2) = App (subst x n e1) (subst x n e2)
 subst x n (Add e1 e2) = Add (subst x n e1) (subst x n e2)
@@ -22,6 +20,7 @@ subst x n (And e1 e2) = And (subst x n e1) (subst x n e2)
 subst x n (If e1 e2 e3) = If (subst x n e1) (subst x n e2) (subst x n e3)
 subst x n (Paren e) = Paren (subst x n e)
 subst x n (Let v e1 e2) = Let v (subst x n e1) (subst x n e2)
+subst x n (List es) = List (map (subst x n) es)
 subst x n e = e 
 
 step :: Expr -> Expr 
@@ -83,6 +82,15 @@ step (Let v e1 e2) | isValue e1 = subst v e1 e2
 
 step e = error (show e)
 
+
+evalList :: Expr -> Expr
+evalList (List es) = List (map eval es)
+
+
 eval :: Expr -> Expr 
-eval e | isValue e = e 
-       | otherwise = eval (step e)
+eval BTrue = BTrue 
+eval BFalse = BFalse
+eval (Num n) = Num n 
+eval (Lam v e1 e2) = Lam v e1 e2
+eval (List es) = evalList (List es)
+eval e = eval (step e)
