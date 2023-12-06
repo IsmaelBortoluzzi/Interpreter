@@ -22,6 +22,7 @@ data Expr = BTrue
           | Paren Expr
           | Let String Expr Expr 
           | List [Expr]
+          | ListConcat Expr Expr
           deriving Show
 
 data Ty = TBool 
@@ -61,6 +62,7 @@ data Token = TokenTrue
            | TokenLSqBracket
            | TokenRSqBracket
            | TokenComma
+           | TokenListConcat
            deriving (Show, Eq)
 
 isSymb :: Char -> Bool 
@@ -86,6 +88,7 @@ lexNum cs = case span isDigit cs of
 lexSymbol :: String -> [Token]
 lexSymbol cs = case span isSymb cs of 
                  ("+", rest)  -> TokenAdd : lexer rest 
+                 ("++", rest)  -> TokenListConcat : lexer rest 
                  ("-", rest)  -> TokenSub : lexer rest 
                  ("*", rest)  -> TokenMul : lexer rest 
                  ("/", rest)  -> TokenDiv : lexer rest 

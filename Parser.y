@@ -15,6 +15,8 @@ import Lexer
 %nonassoc '<' '>' "=="
 %left '+' '-'
 %left '*' '/'
+%left "++"
+
 
 %token 
     num         { TokenNum $$ }
@@ -48,6 +50,7 @@ import Lexer
     '['         { TokenLSqBracket }
     ']'         { TokenRSqBracket }
     ','         { TokenComma }
+    "++"        { TokenListConcat }
 
 %%
 
@@ -71,6 +74,7 @@ Exp         : num                           { Num $1 }
             | '(' Exp ')'                   { Paren $2 }
             | let var '=' Exp in Exp        { Let $2 $4 $6 }
             | '[' ExpList ']'               { List $2 }
+            | Exp "++" Exp                  { ListConcat $1 $3 }
 
 
 ExpList     : {- empty -}                   { [] }

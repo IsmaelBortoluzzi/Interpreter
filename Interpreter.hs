@@ -26,6 +26,7 @@ subst x n (Not e) = Not (subst x n e)
 subst x n (Greater e1 e2) = Greater (subst x n e1) (subst x n e2)
 subst x n (Smaller e1 e2) = Smaller (subst x n e1) (subst x n e2)
 subst x n (Equal e1 e2) = Equal (subst x n e1) (subst x n e2)
+subst x n (ListConcat e1 e2) = ListConcat (subst x n e1) (subst x n e2)
 subst x n (If e1 e2 e3) = If (subst x n e1) (subst x n e2) (subst x n e3)
 subst x n (Paren e) = Paren (subst x n e)
 subst x n (Let v e1 e2) = Let v (subst x n e1) (subst x n e2)
@@ -84,6 +85,10 @@ step (Smaller e1 e2) = Smaller (step e1) e2
 step (Equal (Num n1) (Num n2)) = if (n1 == n2) then BTrue else BFalse
 step (Equal (Num n) e) = Equal (Num n) (step e)
 step (Equal e1 e2) = Equal (step e1) e2
+
+step (ListConcat (List l1) (List l2)) = concatLists (evalList (List l1)) (evalList (List l2))
+step (ListConcat (List l) e) = ListConcat (List l) (step e)
+step (ListConcat e1 e2) = ListConcat (step e1) e2
 
 step (If BFalse e1 e2) = e2 
 step (If BTrue e1 e2) = e1 

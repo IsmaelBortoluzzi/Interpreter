@@ -74,6 +74,12 @@ typeof ctx (List es) = case (map (typeof ctx) es) of
                                    then Just (TList (extractType (head mappedEs)))
                                    else Nothing
 
+typeof ctx (ListConcat e1 e2) = case (typeof ctx e1, typeof ctx e2) of 
+                       (Just (TList t1), Just (TList t2)) -> if t1 == t2 
+                                                             then Just (TList t1)
+                                                             else Nothing
+                       _                                  -> Nothing
+
 
 allSameType :: (Eq a) => [a] -> Bool
 allSameType xs = and $ map (== head xs) (tail xs)

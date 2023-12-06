@@ -26,3 +26,7 @@ subLists (List l1) (List l2) = Num ((sum $ map numNegToInt l1) + (sum $ map numN
 
 multiplyByScalar :: Expr -> Expr -> Expr
 multiplyByScalar (List l) (Num n) = List (map intToNum $ map (*n) $ map numToInt l)
+
+
+concatLists :: Expr -> Expr -> Expr
+concatLists (List l1) (List l2) = List (l1 ++ l2)
