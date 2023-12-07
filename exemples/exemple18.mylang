@@ -1,0 +1,4 @@
+# returning from lambda;
+
+(\x: Num -> [y + x for y in 0..10]) 10;
+

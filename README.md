@@ -30,7 +30,12 @@ The subject aims primarily towards how a programming language is implemented
       Num 45,
       List [Num 10,Num 3,Num 10,Num 3],
       List [BTrue,BFalse,BTrue,BFalse,BTrue],
-      List [BFalse,BTrue,BFalse,BTrue,BTrue]
+      List [BFalse,BTrue,BFalse,BTrue,BTrue],
+      List [BFalse,BFalse,BFalse,BFalse,BFalse],
+      List [Num 0,Num 1,Num 2,Num 3,Num 4,Num 5,Num 6,Num 7,Num 8,Num 9,Num 10],
+      List [Num 0,Num 2,Num 8,Num 18,Num 32,Num 50,Num 72,Num 98,Num 128,Num 162,Num 200],
+      List [Num 10,Num 11,Num 12,Num 13,Num 14,Num 15,Num 16,Num 17,Num 18,Num 19,Num 20],
+      List [Num 5,Num 6,Num 7,Num 8,Num 9,Num 10]
     ]
 
 
@@ -49,10 +54,13 @@ The subject aims primarily towards how a programming language is implemented
     cat exemples/exemple12.mylang | runghc Main.hs
     cat exemples/exemple13.mylang | runghc Main.hs
     cat exemples/exemple14.mylang | runghc Main.hs
-    
-<br>
+    cat exemples/exemple15.mylang | runghc Main.hs
+    cat exemples/exemple16.mylang | runghc Main.hs
+    cat exemples/exemple17.mylang | runghc Main.hs
+    cat exemples/exemple18.mylang | runghc Main.hs
+    cat exemples/exemple19.mylang | runghc Main.hs
 
-You can also test the code in the "exemples" folder.
+
 <br>
 
 

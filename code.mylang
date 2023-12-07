@@ -29,3 +29,15 @@ else 2 + 2;
 [true, false, true, false, true];
 
 [3 > 4, 5 == 5 && (5 == 6 || 7 > 5), 9 < 7, ! 9 < 7, ! false && true];
+
+
+[x && !x for x in [true, false, true, false, true]];
+
+[x for x in 0..10];
+
+# comprehensions aninhada;
+[x + x for x in [x * x for x in 0..10]];
+
+(\x: Num -> [y + x for y in 0..10]) 10;
+
+(\x: Num -> (\y: Num -> [z for z in y..x]) 5) 10;

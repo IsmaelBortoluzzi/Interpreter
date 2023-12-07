@@ -2,6 +2,7 @@ module Interpreter where
 
 import Lexer 
 import Parser
+import TypeChecker
 import ListUtils
 
 isValue :: Expr -> Bool 
@@ -31,6 +32,8 @@ subst x n (If e1 e2 e3) = If (subst x n e1) (subst x n e2) (subst x n e3)
 subst x n (Paren e) = Paren (subst x n e)
 subst x n (Let v e1 e2) = Let v (subst x n e1) (subst x n e2)
 subst x n (List es) = List (map (subst x n) es)
+subst x n (Range e1 e2) = Range (subst x n e1) (subst x n e2)
+subst x n (ListComp e v l) = ListComp (subst x n e) v (subst x n l)
 subst x n e = e 
 
 step :: Expr -> Expr
@@ -102,6 +105,14 @@ step (App e1 e2) = App (step e1) e2
 
 step (Let v e1 e2) | isValue e1 = subst v e1 e2 
                    | otherwise = Let v (step e1) e2
+
+step (Range (Num n1) (Num n2)) = List [Num x | x <- [n1..n2]]
+step (Range (Num n) e) = Range (Num n) (step e)
+step (Range e1 e2) = Range (step e1) e2
+
+step (ListComp exp var (List l)) = List [eval (subst var x exp) | x <- listToHaskellList (evalList (List l))]
+step (ListComp exp var (Range e1 e2)) = List [eval (subst var x exp) | x <- listToHaskellList (eval (Range e1 e2))]
+step (ListComp exp var (ListComp e v l)) = List [eval (subst var x exp) | x <- listToHaskellList (eval (ListComp e v l))]
 
 step e = error (show e)
 

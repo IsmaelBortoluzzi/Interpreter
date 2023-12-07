@@ -1,0 +1,4 @@
+# comprehention aninhada;
+
+[x + x for x in [x * x for x in 0..10]];
+

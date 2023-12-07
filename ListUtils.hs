@@ -30,3 +30,7 @@ multiplyByScalar (List l) (Num n) = List (map intToNum $ map (*n) $ map numToInt
 
 concatLists :: Expr -> Expr -> Expr
 concatLists (List l1) (List l2) = List (l1 ++ l2)
+
+
+listToHaskellList :: Expr -> [Expr]
+listToHaskellList (List l) = l

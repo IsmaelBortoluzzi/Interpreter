@@ -79,6 +79,14 @@ typeof ctx (ListConcat e1 e2) = case (typeof ctx e1, typeof ctx e2) of
                                                              then Just (TList t1)
                                                              else Nothing
                        _                                  -> Nothing
+typeof ctx (Range e1 e2) = case (typeof ctx e1, typeof ctx e2) of 
+                       (Just TNum, Just TNum) -> Just TNum 
+                       _                      -> Nothing
+
+typeof ctx (ListComp e1 v e2) = case (typeof ctx e2) of 
+                       Just (TList t) -> Just (TList $ extractType (typeof ctx e1))
+                       Just TNum      -> Just (TList $ extractType (typeof ctx e1))
+                       _                    -> Nothing
 
 
 allSameType :: (Eq a) => [a] -> Bool
@@ -87,6 +95,7 @@ allSameType xs = and $ map (== head xs) (tail xs)
 
 extractType :: Maybe Ty -> Ty
 extractType (Just e) = e
+extractType Nothing = error "Type error in extractType function!"
 
 
 isThereNothing :: [Maybe Ty] -> Bool

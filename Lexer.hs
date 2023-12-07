@@ -23,6 +23,8 @@ data Expr = BTrue
           | Let String Expr Expr 
           | List [Expr]
           | ListConcat Expr Expr
+          | ListComp Expr String Expr
+          | Range Expr Expr
           deriving Show
 
 data Ty = TBool 
@@ -63,10 +65,12 @@ data Token = TokenTrue
            | TokenRSqBracket
            | TokenComma
            | TokenListConcat
+           | TokenFor
+           | TokenRange
            deriving (Show, Eq)
 
 isSymb :: Char -> Bool 
-isSymb c = c `elem` "!+-*/&|><\\->=:"
+isSymb c = c `elem` "!+-*/&|><\\->=:."
 
 lexer :: String -> [Token]
 lexer [] = [] 
@@ -102,6 +106,7 @@ lexSymbol cs = case span isSymb cs of
                  ("->", rest) -> TokenArrow : lexer rest 
                  ("=", rest)  -> TokenEq : lexer rest 
                  (":", rest)  -> TokenColon : lexer rest 
+                 ("..", rest) -> TokenRange : lexer rest 
                  _ -> error "Lexical error: invalid symbol!"
 
 lexKW :: String -> [Token]
@@ -116,6 +121,5 @@ lexKW cs = case span isAlpha cs of
              ("Num", rest) -> TokenTyNumber : lexer rest 
              ("Bool", rest) -> TokenTyBoolean : lexer rest 
              ("List", rest) -> TokenTyList : lexer rest 
+             ("for", rest) -> TokenFor : lexer rest 
              (var, rest) -> TokenVar var : lexer rest 
-
-

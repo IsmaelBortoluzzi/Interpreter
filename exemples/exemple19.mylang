@@ -1,0 +1,3 @@
+# comprehension em lambda aninhada;
+
+(\x: Num -> (\y: Num -> [z for z in y..x]) 5) 10;
