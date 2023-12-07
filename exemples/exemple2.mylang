@@ -1,0 +1,1 @@
+let b = ((\z: Num -> z + z) 10) in (((\x: Num -> (\y: Num -> x + y + b)) 2) 3);
